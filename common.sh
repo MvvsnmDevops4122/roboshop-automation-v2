@@ -21,11 +21,11 @@ check_root (){
 mkdir -p $logs_folder
 
 timestamp(){
-    date "+%F %T" 
+    date "+%F %T"
 }
 
 # start the script execution 
-echo "$(timestamp) [INFO] ==== Script started Execution =====" | tee -a $logs_file
+echo -e "$(timestamp) [INFO] ==== Script started Execution =====" | tee -a $logs_file
 
 # validate function to check the exit status of the command 
 validate(){
@@ -38,6 +38,6 @@ validate(){
 }
 
 total_time (){
-    echo "$(timestamp) [INFO] Script completed in $SECONDS seconds"
-    echo "$(timestamp) [INFO] ==== Script completed Execution =====" | tee -a $logs_file
+    echo -e "$(timestamp) [INFO] Script completed in $SECONDS seconds"  | tee -a $logs_file
+    echo -e "$(timestamp) [INFO] ==== Script completed Execution =====" | tee -a $logs_file
 }
