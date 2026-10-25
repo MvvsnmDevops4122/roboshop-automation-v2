@@ -78,7 +78,7 @@ validate $? "Unzipping $app_name application code"
 
 systemd_setup(){
     sed -i -e "s/DOMAIN_NAME/${domain_name}/" $scripts_dir/$app_name.service
-    cp $scripts_dir/catalogue.service /etc/systemd/system/$app_name.service
+    cp $scripts_dir/$app_name.service /etc/systemd/system/$app_name.service
 # Reload the systemd daemon to recognize the new service, enable it to start on boot, and start the service.
     systemctl daemon-reload  &>> $logs_file
     systemctl enable $app_name &>> $logs_file
