@@ -37,6 +37,60 @@ validate(){
     fi
 }
 
+nodejs_setup(){
+    dnf module disable nodejs -y &>> $logs_file
+    dnf module enable nodejs:24 -y &>> $logs_file
+    dnf install nodejs -y &>> $logs_file
+    validate $? "Installing NodeJS"
+
+    npm install &>> $logs_file
+    validate $? "Installing nodejs dependencies for catalogue application"
+}
+
+app_setup(){
+# Verify if the roboshop user already exist or not. If not then create the user.
+id roboshop &>> $logs_file
+if [ $? == 0 ]; then
+    echo -e "$(timestamp) [INFO] Roboshop user already exists...${Y}SKIPPING${N}"
+else
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $logs_file
+    validate $? "Creating Roboshop system user" 
+fi
+
+# Remove the existing code from the /app directory to ensure a clean installation of the catalogue application.
+rm -rf /app/* &>> $logs_file
+validate $? "Removing old code from /app directory"
+
+# Create the /app directory if it does not exist. This is the home directory for the roboshop user.
+mkdir -p /app
+validate $? "Creating /app directory"
+
+# Download the catalogue application code from the GitHub repository.
+curl -L -o /tmp/$app_name.zip https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/$app_name-v4.zip &>> $logs_file
+validate $? "Downloading $app_name application code"
+
+# Unzip the downloaded code into the /app directory.
+cd /app
+unzip -o /tmp/$app_name.zip &>> $logs_file
+validate $? "Unzipping $app_name application code"
+
+}
+
+systemd_setup(){
+    sed -i -e "s/DOMAIN_NAME/${domain_name}/" $scripts_dir/$app_name.service
+    cp $scripts_dir/catalogue.service /etc/systemd/system/$app_name.service
+# Reload the systemd daemon to recognize the new service, enable it to start on boot, and start the service.
+    systemctl daemon-reload  &>> $logs_file
+    systemctl enable $app_name &>> $logs_file
+    systemctl start $app_name  &>> $logs_file
+    validate $? "Starting and enabling $app_name service"
+}
+
+restart(){
+systemctl restart $app_namee &>> $logs_file
+validate $? "Restarting $app_name service"
+}
+
 total_time (){
     echo -e "$(timestamp) [INFO] Script completed in $SECONDS seconds"  | tee -a $logs_file
     echo -e "$(timestamp) [INFO] ==== Script completed Execution =====" | tee -a $logs_file
