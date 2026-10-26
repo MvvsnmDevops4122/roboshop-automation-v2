@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./common.sh
+
 check_root
 
 # Install Redis server and configure it to allow remote connections
