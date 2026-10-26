@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source ./common.sh
+
 check_root
 
 # enable the MySQL module and install the MySQL server package
