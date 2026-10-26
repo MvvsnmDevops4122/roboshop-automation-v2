@@ -1,6 +1,8 @@
 #!/bin/bash
 
+
 source ./common.sh
+
 check_root
 
 # Add the RabbitMQ repository to the system and install the RabbitMQ server package
