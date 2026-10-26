@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 app_name=catalogue
 source ./common.sh
 check_root
@@ -30,5 +29,6 @@ else
     
 fi
 
+restart
 total_time
 
